@@ -61,11 +61,11 @@ app.delete('/todos/:id', (req, res) => {
   Todo.findByIdAndRemove(id)
     .then(doc => {
       if (!doc) {
-        return res.respond(404).send();
+        return res.status(404).send();
       }
-      return res.respond(200).send(doc);
+      return res.status(200).send({ doc });
     })
-    .catch(e => res.respond(400).send());
+    .catch(e => res.status(400).send());
 });
 
 app.listen(port, () => {
