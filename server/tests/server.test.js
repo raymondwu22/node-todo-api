@@ -12,6 +12,8 @@ const todoSeedData = [
   {
     _id: new ObjectId(),
     text: 'Second text',
+    completed: true,
+    completedAt: 333,
   },
 ];
 
@@ -150,6 +152,38 @@ describe('DELETE todos', () => {
     request(app)
       .delete(`/todos/${id}`)
       .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH todos', () => {
+  it('should update the todo', done => {
+    const id = todoSeedData[0]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({ text: 'update text', completed: true })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe('update text');
+        expect(res.body.todo.completed).toBe(true);
+        expect(typeof res.body.todo.completedAt).toBe('number');
+      })
+      .end(done);
+  });
+
+  it('should clear completedAt when todo is not completed', done => {
+    const id = todoSeedData[1]._id;
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({ text: 'update text', completed: false })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe('update text');
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completedAt).toBeNull();
+      })
       .end(done);
   });
 });
