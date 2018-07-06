@@ -101,6 +101,19 @@ app.delete('/todos/:id', (req, res) => {
     .catch(e => res.status(400).send());
 });
 
+// Create - POST
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+  const user = new User(body);
+
+  user
+    .save()
+    .then(() => user.generateAuthToken())
+    // create a custom header and pass our token
+    .then(token => res.header('x-auth', token).send(user))
+    .catch(err => res.status(400).send(err));
+});
+
 app.listen(port, () => {
   console.log(`App is running on PORT ${port}`);
 });
