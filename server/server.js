@@ -8,6 +8,7 @@ const _ = require('lodash');
 const { mongoose } = require('./db/mongoose');
 const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
+const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
 
@@ -16,6 +17,7 @@ const port = process.env.PORT;
 
 // Set our middleware
 app.use(bodyParser.json());
+
 // Create - POST
 app.post('/todos', (req, res) => {
   const todo = new Todo({
@@ -28,6 +30,10 @@ app.post('/todos', (req, res) => {
       res.send(doc);
     })
     .catch(err => res.status(400).send(err));
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 // Read - GET
