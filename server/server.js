@@ -120,7 +120,6 @@ app.post('/users', (req, res) => {
     .catch(err => res.status(400).send(err));
 });
 
-// POST /users/login {email, password}
 app.post('/users/login', (req, res) => {
   const body = _.pick(req.body, ['email', 'password']);
   User.findByCredentials(body.email, body.password)
